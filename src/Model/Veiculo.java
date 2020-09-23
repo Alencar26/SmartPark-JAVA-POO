@@ -2,25 +2,24 @@ package Model;
 
 public class Veiculo {
 
-	
-	private String marca;
 	private String placa;
+	private String marca;
+	private String modelo;
 	private String cor;
-	private String nomeVeiculo;
-
+	
+	
 	public Veiculo() {
 
 	}
 
-	public Veiculo( String marca, String placa, String cor, String nomeVeiculo) {
+	public Veiculo( String placa, String marca, String modelo, String cor ) {
 		
-		this.marca = marca;
 		this.placa = placa;
+		this.marca = marca;
+		this.modelo = modelo;
 		this.cor = cor;
-		this.nomeVeiculo = nomeVeiculo;
+		
 	}
-
-	
 
 	
 	public String getMarca() {
@@ -47,18 +46,18 @@ public class Veiculo {
 		this.cor = cor;
 	}
 
-	public String getNomeVeiculo() {
-		return nomeVeiculo;
+	public String getModelo() {
+		return modelo;
 	}
 
-	public void setNomeVeiculo(String nomeVeiculo) {
-		this.nomeVeiculo = nomeVeiculo;
+	public void setModelo(String modelo) {
+		this.modelo = modelo;
 	}
 
 	@Override
 	public String toString() {
 		return "Veiculo [ Marca:" + marca + ", Placa:" + placa + ", Cor:" + cor
-				+ ", Nome do Veiculo:" + nomeVeiculo + "]";
+				+ ", Modelo:" + modelo + "]";
 	}
 	
 	
