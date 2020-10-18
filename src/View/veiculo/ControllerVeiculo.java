@@ -1,9 +1,13 @@
 package View.veiculo;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import DAO.VeiculoDAO;
+import Model.RegistroEstacionamento;
 import Model.Veiculo;
+import View.inicial.ControllerInicial;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,16 +38,25 @@ public class ControllerVeiculo extends Application {
     
     @FXML
     void CadastrarVeiculo(ActionEvent event) {
-    	Veiculo veiculo = pegaDados();
+    	RegistroEstacionamento veiculo = pegaDados();
     	limpaCampo();
     	int qntd = new VeiculoDAO().inserir(veiculo);
     	System.out.println(qntd);
+    	
+        ControllerInicial inicial = new ControllerInicial();
+        inicial.listarVeiculosNoPatio();
     }
     
-    
-  
-    private Veiculo pegaDados() {
-    	return new Veiculo(txtPlaca.getText(), txtMarca.getText(), txtModelo.getText(), txtCor.getText());
+
+     
+    private RegistroEstacionamento pegaDados() {
+    	LocalDateTime entrada;
+    	LocalDateTime saida = null;
+    	
+    	entrada = LocalDateTime.now();
+    	saida = null;
+    	
+    	return new RegistroEstacionamento(txtPlaca.getText(), txtMarca.getText(), txtModelo.getText(), txtCor.getText(), entrada, saida);
     }
     
     private void limpaCampo() {

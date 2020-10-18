@@ -1,23 +1,22 @@
 package DAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
-import Model.Veiculo;
+import Model.RegistroEstacionamento;
 import db.dbConection;
 
 public class VeiculoDAO extends dbConection {
 
-	final String SQL_INSERT_VEICULO = "INSERT INTO VEICULO(PLACA, MARCA, MODELO, COR) VALUES(?, ?, ?, ?)";
-	final String SQL_SELECT_VEICULO = "SELECT * FROM VEICULO";
+	final String SQL_INSERT_VEICULO = "INSERT INTO REGISTRO(PLACA, MARCA, MODELO, COR, ENTRADA) VALUES(?, ?, ?, ?, ?)";
+	final String SQL_SELECT_VEICULO = "SELECT * FROM REGISTRO";
+	final String SQL_SELECT_VEICULO_PLACA = "SELECT * FROM REGISTRO WHERE PLACA = ?";
+	final String SQL_DELETE_VEICULO = "DELETE FROM REGISTRO WHERE PLACA = ?";
 	
-	
-	
-	public int inserir(Veiculo veiculo) {
+	public int inserir(RegistroEstacionamento veiculo) {
 		
 		int quantidade = 0;
 		
@@ -28,7 +27,11 @@ public class VeiculoDAO extends dbConection {
 			pst.setString(2, veiculo.getMarca());
 			pst.setString(3, veiculo.getModelo());
 			pst.setString(4, veiculo.getCor());
-			
+			pst.setTimestamp(5, java.sql.Timestamp.valueOf(
+												veiculo.getEntrada().format(
+																DateTimeFormatter.ofPattern(
+																		"yyyy-MM-dd HH:mm:ss.SSS")).toString()));
+			/*java.sql.Timestamp.valueOf("2012-03-22 08:49:51.784")*/
 			quantidade = pst.executeUpdate();
 			
 		}catch(SQLException e) {
@@ -38,8 +41,8 @@ public class VeiculoDAO extends dbConection {
 		return quantidade;
 	}
 	
-	public List<Veiculo> listarTodos() {
-		List<Veiculo> listaVeiculos = new ArrayList<Veiculo>();
+	public List<RegistroEstacionamento> listarTodos() {
+		List<RegistroEstacionamento> listaVeiculos = new ArrayList<RegistroEstacionamento>();
 		
 		
 		try(Connection connection = this.conectar();
@@ -48,12 +51,13 @@ public class VeiculoDAO extends dbConection {
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()) {
-				Veiculo veiculo = new Veiculo();
+				RegistroEstacionamento veiculo = new RegistroEstacionamento();
 				
 				veiculo.setPlaca(rs.getString("PLACA"));
 				veiculo.setMarca(rs.getString("MARCA"));
 				veiculo.setModelo(rs.getString("MODELO"));
 				veiculo.setCor(rs.getString("COR"));
+				veiculo.setEntrada(rs.getTimestamp("ENTRADA").toLocalDateTime());
 				
 				listaVeiculos.add(veiculo);
 			
@@ -66,6 +70,46 @@ public class VeiculoDAO extends dbConection {
 		
 	}
 	
+	public RegistroEstacionamento findByPLACA(String PLACA) {
+		
+		RegistroEstacionamento veiculo = null;
+		
+		try(Connection connection = this.conectar();
+				PreparedStatement pst = connection.prepareStatement(SQL_SELECT_VEICULO_PLACA);){
+			
+			pst.setString(1, PLACA);
+			ResultSet rs = pst.executeQuery();
+			
+			while(rs.next()) {
+				veiculo = new RegistroEstacionamento();
+				
+				veiculo.setPlaca(rs.getString("PLACA"));
+				veiculo.setMarca(rs.getString("MARCA"));
+				veiculo.setModelo(rs.getString("MODELO"));
+				veiculo.setCor(rs.getString("COR"));
+				veiculo.setEntrada(rs.getTimestamp("ENTRADA").toLocalDateTime());
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return veiculo;
+	}
+	
+	
+	public void excluir(String PLACA) {
+		try(Connection connection = this.conectar();
+				PreparedStatement pst = connection.prepareStatement(SQL_DELETE_VEICULO);){
+			
+			pst.setString(1, PLACA);
+			pst.execute();
+			System.out.println("Sucesso!");
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 	
 }

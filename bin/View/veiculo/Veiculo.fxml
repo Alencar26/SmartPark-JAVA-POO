@@ -6,22 +6,21 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane onDragDetected="#CadastrarVeiculo" prefHeight="401.0" prefWidth="691.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="View.veiculo.ControllerVeiculo">
+<AnchorPane onDragDetected="#CadastrarVeiculo" prefHeight="355.0" prefWidth="346.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.veiculo.ControllerVeiculo">
    <children>
-      <Button fx:id="btnCadastro" layoutX="114.0" layoutY="236.0" mnemonicParsing="false" onAction="#CadastrarVeiculo" text="Cadastrar" />
-      <Label layoutX="231.0" layoutY="23.0" text="Cadastro Veículo" textFill="RED">
+      <Button fx:id="btnCadastro" layoutX="96.0" layoutY="252.0" mnemonicParsing="false" onAction="#CadastrarVeiculo" prefHeight="37.0" prefWidth="187.0" text="Cadastrar" />
+      <Label layoutX="95.0" layoutY="27.0" text="Cadastro Veículo" textFill="RED">
          <font>
             <Font size="21.0" />
          </font>
       </Label>
-      <Label layoutX="62.0" layoutY="92.0" text="PLACA" />
-      <Label layoutX="55.0" layoutY="127.0" text="MODELO" />
-      <Label layoutX="59.0" layoutY="163.0" text="MARCA" />
-      <Label layoutX="68.0" layoutY="200.0" text="COR" />
-      <TextField fx:id="txtCor" layoutX="114.0" layoutY="196.0" onAction="#CadastrarVeiculo" />
-      <TextField fx:id="txtModelo" layoutX="114.0" layoutY="123.0" />
-      <TextField fx:id="txtPlaca" layoutX="114.0" layoutY="88.0" />
-      <TextField fx:id="txtMarca" layoutX="114.0" layoutY="159.0" />
+      <Label layoutX="32.0" layoutY="97.0" text="PLACA" />
+      <Label layoutX="25.0" layoutY="132.0" text="MODELO" />
+      <Label layoutX="29.0" layoutY="168.0" text="MARCA" />
+      <Label layoutX="38.0" layoutY="205.0" text="COR" />
+      <TextField fx:id="txtCor" layoutX="96.0" layoutY="200.0" onAction="#CadastrarVeiculo" promptText="CINZA" />
+      <TextField fx:id="txtModelo" layoutX="96.0" layoutY="127.0" prefHeight="25.0" prefWidth="187.0" promptText="PALIO" />
+      <TextField fx:id="txtPlaca" layoutX="96.0" layoutY="89.0" promptText="ABC-123" />
+      <TextField fx:id="txtMarca" layoutX="96.0" layoutY="163.0" promptText="FIAT" />
    </children>
 </AnchorPane>
