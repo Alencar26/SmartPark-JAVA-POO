@@ -7,7 +7,9 @@ public class Estacionamento {
 	private String nome;
 	private int vagas;
 	
-	
+	public Estacionamento() {
+		
+	}
 
 	public Estacionamento(String nome, int vagas) {
 		super();

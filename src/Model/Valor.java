@@ -2,60 +2,33 @@ package Model;
 
 public class Valor {
 
-	private int id;
-	private double valor;
+	private float id;
+	private float valor;
 	
 	
-	public void Valor() {
+	public Valor() {
 		
 	}
 	
-	public void Valor(int id, double volor) {
+	public Valor(float id, float valor) {
 		this.id = id;
 		this.valor = valor;
 	}
 	
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + id;
-		long temp;
-		temp = Double.doubleToLongBits(valor);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Valor other = (Valor) obj;
-		if (id != other.id)
-			return false;
-		if (Double.doubleToLongBits(valor) != Double.doubleToLongBits(other.valor))
-			return false;
-		return true;
-	}
-
-	public int getId() {
+	public float getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(float id) {
 		this.id = id;
 	}
 
-	public double getValor() {
+	public float getValor() {
 		return valor;
 	}
 
-	public void setValor(double valor) {
+	public void setValor(float valor) {
 		this.valor = valor;
 	}
 

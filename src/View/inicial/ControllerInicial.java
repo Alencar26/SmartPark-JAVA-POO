@@ -2,17 +2,19 @@ package View.inicial;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Formatter;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Timer;
-
+import java.util.TimerTask;
+import DAO.EstacionamentoDAO;
 import DAO.VeiculoDAO;
+import Model.Estacionamento;
 import Model.RegistroEstacionamento;
-import Model.Veiculo;
+import View.veiculo.ControllerVeiculo;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -55,11 +57,18 @@ public class ControllerInicial extends Application implements Initializable {
     @FXML
     private Label lbldataHora;
     
+    @FXML
+    private Button btnAtualizar;
+    
+    @FXML
+    private Button btnEstac;
+    
+    @FXML
+    private Label lblTotalVagas;
     
     
-    public void execute() {
-    	launch();
-    }
+    
+
     
     @Override
     public void start(Stage stage) {
@@ -73,7 +82,11 @@ public class ControllerInicial extends Application implements Initializable {
     	}catch(IOException e) {
     		e.printStackTrace();
     	}
-    	
+    	 
+    } 
+    
+    public void execute() {
+    	launch();
     }
      
     @FXML
@@ -101,14 +114,53 @@ public class ControllerInicial extends Application implements Initializable {
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("VeiculosSaida");
 		primaryStage.show();
+
 		
     }
+    
+    @FXML
+    void TelaEstacionamento(ActionEvent event) throws IOException{
+    	Pane testPane = FXMLLoader
+				.load(getClass().getResource("/View/estacionamento/Estacionamento.fxml"));
+
+		Scene scene = new Scene(testPane);
+		Stage primaryStage = new Stage(StageStyle.DECORATED);
+		primaryStage.setResizable(false);
+		primaryStage.setScene(scene);
+		primaryStage.setTitle("TelaEstacionamento");
+		primaryStage.show();
+    }
+    
+    
+    @FXML
+    void atualizarLista(ActionEvent event) {
+    	listarVeiculosNoPatio();
+    	ContaVagas();
+    	int contagem = new EstacionamentoDAO().Contagem();
+    	System.out.println(contagem);
+    }
+    
     
     @FXML
     void SairAplicacao(ActionEvent event) {
     	btnSairAplicacao.setOnAction(e -> Platform.exit());
     }
     
+    
+    @FXML
+    void TelaValores(ActionEvent event) throws IOException{
+
+    	Pane testPane = FXMLLoader
+				.load(getClass().getResource("/View/valor/Valor.fxml"));
+
+		Scene scene = new Scene(testPane);
+		Stage primaryStage = new Stage(StageStyle.DECORATED);
+		primaryStage.setResizable(false);
+		primaryStage.setScene(scene);
+		primaryStage.setTitle("TelaValores");
+		primaryStage.show();
+    	
+    }
 
     public void listarVeiculosNoPatio() {
     	txtAreaVeiculos.clear();
@@ -120,9 +172,55 @@ public class ControllerInicial extends Application implements Initializable {
     	
     }
     
+    private void ContaVagas() {
+    	
+    	Estacionamento estac = new Estacionamento();
+    	estac = new EstacionamentoDAO().findById();
+    	
+    	int totalVagas = estac.getVagas();
+    	int vagasOcupdas = new EstacionamentoDAO().Contagem();
+    	
+    	int vagasDisponiveis = totalVagas - vagasOcupdas;
+    	
+    	lblTotalVagas.setText(totalVagas+"");
+    	lblNumVagas.setText(vagasDisponiveis+"");
+    	
+    }
+   
+    private void Hora() {
+        lbldataHora.setText("Horário de entrada: "+LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+    }
+    
+    /*
+    //ROTINA TRAVA O PROGRAMA
+    private void rotina() {
+    	
+		    Timer timer = new Timer();
+		    
+		    final long SEGUNDOS = (1000 * 5);
+		    
+		    TimerTask horaAtual = new TimerTask() {
+		    	
+		    	@Override
+		    	public void run() {
+		    		listarVeiculosNoPatio();
+		    	}
+		    	
+		    };
+		    
+		    	timer.scheduleAtFixedRate(horaAtual, 0, SEGUNDOS);
+	    	
+	    }
+    
+    */
+
+    
     @Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-    	listarVeiculosNoPatio();	
+    	
+    	listarVeiculosNoPatio();
+    	Hora();
+    	ContaVagas();
 	}
     
 }

@@ -45,6 +45,7 @@ public class VeiculoDAO extends dbConection {
 		List<RegistroEstacionamento> listaVeiculos = new ArrayList<RegistroEstacionamento>();
 		
 		
+		
 		try(Connection connection = this.conectar();
 				PreparedStatement pst = connection.prepareStatement(SQL_SELECT_VEICULO);){
 			
@@ -61,6 +62,7 @@ public class VeiculoDAO extends dbConection {
 				
 				listaVeiculos.add(veiculo);
 			
+				
 			}	
 		}catch(SQLException e) {
 			e.printStackTrace();
