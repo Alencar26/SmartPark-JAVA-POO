@@ -2,21 +2,21 @@ package View.inicial;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Formatter;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
 import DAO.EstacionamentoDAO;
 import DAO.VeiculoDAO;
 import Model.Estacionamento;
 import Model.RegistroEstacionamento;
-import View.veiculo.ControllerVeiculo;
+import Model.Valor;
+import View.veiculo.ControllerVeiculoSaida;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,23 +24,24 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import testes.TesteTabela;
 
 
 public class ControllerInicial extends Application implements Initializable {
 
-    @FXML
+	@FXML
     private Button btnEntrada;
 
     @FXML
     private Button btnSaida;
-
-    @FXML
-    private TextArea txtAreaVeiculos;
 
     @FXML
     private Button btnFuncionario;
@@ -52,42 +53,69 @@ public class ControllerInicial extends Application implements Initializable {
     private Button btnValores;
 
     @FXML
+    private Button btnEstac;
+
+    @FXML
     private Label lblNumVagas;
 
     @FXML
     private Label lbldataHora;
-    
+
     @FXML
     private Button btnAtualizar;
-    
-    @FXML
-    private Button btnEstac;
-    
+
     @FXML
     private Label lblTotalVagas;
-    
-    
-    
 
+    @FXML
+    private TableView<RegistroEstacionamento> Tabela;
+
+    @FXML
+    private TableColumn<RegistroEstacionamento, String> ColunaPlaca;
+
+    @FXML
+    private TableColumn<RegistroEstacionamento, String> ColunaMarca;
+
+    @FXML
+    private TableColumn<RegistroEstacionamento, String> ColunaModelo;
+
+    @FXML
+    private TableColumn<RegistroEstacionamento, String> ColunaCor;
+
+    @FXML
+    private TableColumn<RegistroEstacionamento, String> ColunaEntrada;
+
+    private ObservableList<RegistroEstacionamento> observableListVeiculos;
     
-    @Override
-    public void start(Stage stage) {
+    
+  public void carregaTabela() {
     	
-    	try {
-    		AnchorPane pane = (AnchorPane)FXMLLoader.load(getClass().getResource("Inicial.fxml"));
-    		stage.setTitle("Inicial");
-    		Scene sc = new Scene(pane);
-    		stage.setScene(sc);
-    		stage.show();
-    	}catch(IOException e) {
-    		e.printStackTrace();
-    	}
-    	 
-    } 
-    
-    public void execute() {
-    	launch();
+    	ColunaPlaca.setCellValueFactory(new PropertyValueFactory<>("placa"));
+    	ColunaMarca.setCellValueFactory(new PropertyValueFactory<>("marca"));
+    	ColunaModelo.setCellValueFactory(new PropertyValueFactory<>("modelo"));
+    	ColunaCor.setCellValueFactory(new PropertyValueFactory<>("cor"));
+    	ColunaEntrada.setCellValueFactory(new PropertyValueFactory<>("entrada")); 	
+    	
+    	
+    	List<RegistroEstacionamento> listaVeiculo = new VeiculoDAO().listarTodos();
+    	observableListVeiculos = FXCollections.observableArrayList(listaVeiculo);
+    	
+    	Tabela.setItems(observableListVeiculos);
     }
+
+	  private void ConfirmaSelecao(RegistroEstacionamento v) {
+	  	System.out.println("Veiculo Selecionado: "+ v);
+	  	
+	  	new ControllerVeiculoSaida().execute();
+	  }
+	  
+	  private void VeicuoSelecionado() {
+	  	
+		  Tabela.getSelectionModel().selectedItemProperty().addListener(
+	  			(observable, oldValue, newValue) -> ConfirmaSelecao(newValue));
+	  	
+	  	
+	  }
      
     @FXML
     void TelaVeiculoEntrada(ActionEvent event) throws IOException {
@@ -134,10 +162,12 @@ public class ControllerInicial extends Application implements Initializable {
     
     @FXML
     void atualizarLista(ActionEvent event) {
-    	listarVeiculosNoPatio();
+    	carregaTabela();
+    	//listarVeiculosNoPatio();
     	ContaVagas();
     	int contagem = new EstacionamentoDAO().Contagem();
     	System.out.println(contagem);
+    	
     }
     
     
@@ -162,15 +192,6 @@ public class ControllerInicial extends Application implements Initializable {
     	
     }
 
-    public void listarVeiculosNoPatio() {
-    	txtAreaVeiculos.clear();
-    	List<RegistroEstacionamento> listaVeiculo = new VeiculoDAO().listarTodos();
-    	
-    	listaVeiculo.forEach(veiculo -> {
-    		txtAreaVeiculos.appendText(veiculo.toString() + "\n");
-    	});
-    	
-    }
     
     private void ContaVagas() {
     	
@@ -191,34 +212,31 @@ public class ControllerInicial extends Application implements Initializable {
         lbldataHora.setText("Horário de entrada: "+LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
     }
     
-    /*
-    //ROTINA TRAVA O PROGRAMA
-    private void rotina() {
+
+    @Override
+    public void start(Stage stage) {
     	
-		    Timer timer = new Timer();
-		    
-		    final long SEGUNDOS = (1000 * 5);
-		    
-		    TimerTask horaAtual = new TimerTask() {
-		    	
-		    	@Override
-		    	public void run() {
-		    		listarVeiculosNoPatio();
-		    	}
-		    	
-		    };
-		    
-		    	timer.scheduleAtFixedRate(horaAtual, 0, SEGUNDOS);
-	    	
-	    }
+    	try {
+    		AnchorPane pane = (AnchorPane)FXMLLoader.load(getClass().getResource("Inicial.fxml"));
+    		stage.setTitle("Inicial");
+    		Scene sc = new Scene(pane);
+    		stage.setScene(sc);
+    		stage.show();
+    	}catch(IOException e) {
+    		e.printStackTrace();
+    	}
+    	 
+    } 
     
-    */
+    public void execute() {
+    	launch();
+    }
 
     
     @Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-    	
-    	listarVeiculosNoPatio();
+    	carregaTabela();
+    	VeicuoSelecionado();
     	Hora();
     	ContaVagas();
 	}

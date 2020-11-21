@@ -19,6 +19,14 @@ public class Valor {
 	public float getId() {
 		return id;
 	}
+	
+	public String getIdString() {
+		return this.id+"";
+	}
+	
+	public String getValorString() {
+		return this.valor+"";
+	}
 
 	public void setId(float id) {
 		this.id = id;

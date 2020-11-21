@@ -2,11 +2,8 @@ package View.veiculo;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import DAO.VeiculoDAO;
 import Model.RegistroEstacionamento;
-import Model.Veiculo;
 import View.inicial.ControllerInicial;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -44,7 +41,6 @@ public class ControllerVeiculo extends Application {
     	System.out.println(qntd);
     	
         ControllerInicial inicial = new ControllerInicial();
-        inicial.listarVeiculosNoPatio();
     }
     
 
@@ -67,6 +63,7 @@ public class ControllerVeiculo extends Application {
     	
     	txtPlaca.requestFocus();
     }
+    
     
     public void execute() {
     	launch();

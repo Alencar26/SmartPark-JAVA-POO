@@ -1,13 +1,20 @@
 package View.valor;
 
 import java.io.IOException;
+import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.List;
+import java.util.ResourceBundle;
 import DAO.ValorDAO;
 import Model.Valor;
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,18 +22,18 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
-public class ControllerValor extends Application  {
+public class ControllerValor extends Application implements Initializable {
 
-	  	@FXML
-	    private TableView<?> tblHorarioValor;
+	 	@FXML
+	    private TableView<Valor> tblHorarioValor;
 
 	    @FXML
-	    private TableColumn<?, ?> tblValores;
+	    private TableColumn<Valor, String> ColunaHoras;
 
+	    @FXML
+	    private TableColumn<Valor, String> ColunaValores;
 	    @FXML
 	    private Button btnAdiciona;
 
@@ -64,7 +71,10 @@ public class ControllerValor extends Application  {
 	    void CadastraValor(ActionEvent event) {
 
 	    	Valor valorHora = PegaDados();
+
 	    	limpaCampos();
+	    	ListaValores();
+	    	ConfirmaSelecao();
 	    	int retorno = new ValorDAO().inserir(valorHora);
 	    	System.out.println(retorno);
 	    	
@@ -122,9 +132,52 @@ public class ControllerValor extends Application  {
 	    	int retorno = new ValorDAO().alterar(valor);
 	    	limpaCampos();
 	    	System.out.println(retorno);
+	    	ListaValores();
 	    	limpaCampos();
 	    	
 	    }
+	    
+	    private void ListaValores() {
+
+	    	
+	    	
+	    	
+	    	List<Valor> listaValores = new ValorDAO().listarTodos();
+	    	System.out.println(listaValores);
+	    	ObservableList<Valor> observableListValores;
+	    	
+	    	observableListValores = FXCollections.observableArrayList(listaValores);
+	    	  	
+	    	
+	    	ColunaHoras = new TableColumn<>("id");
+	    	ColunaHoras.setCellValueFactory(Data -> new SimpleStringProperty(Data.getValue().getIdString()));
+	    	ColunaValores = new TableColumn<>("valor");
+	    	ColunaValores.setCellValueFactory(Data -> new SimpleStringProperty(Data.getValue().getValorString()));
+	    	//ColunaHoras.setCellValueFactory(new PropertyValueFactory<Valor, Float>("id"));
+	    	//ColunaValores.setCellValueFactory(new PropertyValueFactory<Valor, Float>("valor"));
+	    	tblHorarioValor.setItems(observableListValores);
+	    }
+	    
+	    
+	    
+	    private void ValorSelecionado(Valor v) {
+	    	System.out.println("Valor Selecionado: "+ v);
+	    	
+	    	lblMostraHorario.setText("Horário:  " + v.getId()+" horas");
+	    	DecimalFormat formatador = new DecimalFormat("0.00"); 
+			String valorAPAgar = formatador.format(v.getValor());
+			lblMostraValor.setText("Valor: R$ "+ valorAPAgar);
+			txtBuscaHorario.setText(v.getId()+"");
+	    }
+	    
+	    private void ConfirmaSelecao() {
+	    	
+	    	tblHorarioValor.getSelectionModel().selectedItemProperty().addListener(
+	    			(observable, oldValue, newValue) -> ValorSelecionado(newValue));
+	    	
+	    	
+	    }
+	    
 	    
 	    
 	    private Valor PegaDados() {
@@ -163,6 +216,13 @@ public class ControllerValor extends Application  {
     	}
 
     }
+    
+    @Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+    	
+    	ListaValores();
+    	ConfirmaSelecao();
+	}
 }
 
 

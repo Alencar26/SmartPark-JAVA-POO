@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import Model.RegistroEstacionamento;
 import Model.Valor;
@@ -16,6 +18,9 @@ public class ValorDAO extends dbConection{
 		final String SQL_SELECT_VALOR_HORARIO = "SELECT * FROM VALOR WHERE ID = ?";
 		final String SQL_DELETE_VALOR = "DELETE FROM VALOR WHERE ID = ?";
 		final String SQL_UPDATE_VALOR_ID = "UPDATE VALOR SET VALOR = ? WHERE ID = ?";
+		final String SQL_SELECT_VALOR = "SELECT * FROM VALOR";
+		final String SQL_SELECT_VALOR_A_PAGAR = "SELECT * FROM VALOR WHERE ID < ?";
+		
 		
 		public int inserir(Valor valor) {
 				
@@ -46,6 +51,30 @@ public class ValorDAO extends dbConection{
 					PreparedStatement pst = connection.prepareStatement(SQL_SELECT_VALOR_HORARIO);){
 				
 				pst.setFloat(1, horario);
+				ResultSet rs = pst.executeQuery();
+				
+				while(rs.next()) {
+					valor = new Valor();
+					
+					valor.setId(rs.getFloat("ID"));
+					valor.setValor(rs.getFloat("VALOR"));
+					
+				}
+				
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+			return valor;
+		}
+		
+public Valor findByHours(double horario) {
+			
+			Valor valor = null;
+			
+			try(Connection connection = this.conectar();
+					PreparedStatement pst = connection.prepareStatement(SQL_SELECT_VALOR_A_PAGAR);){
+				
+				pst.setDouble(1, horario);
 				ResultSet rs = pst.executeQuery();
 				
 				while(rs.next()) {
@@ -97,6 +126,36 @@ public class ValorDAO extends dbConection{
 		}
 			return quantidade;
 		
+		}
+		
+		public List<Valor> listarTodos() {
+			List<Valor> listaValores = new ArrayList<Valor>();
+			
+			
+			
+			try(Connection connection = this.conectar();
+					PreparedStatement pst = connection.prepareStatement(SQL_SELECT_VALOR);){
+				
+				ResultSet rs = pst.executeQuery();
+				
+				while(rs.next()) {
+					Valor valor = new Valor();
+					
+					valor.setId(rs.getFloat("ID"));
+					valor.setValor(rs.getFloat("VALOR"));
+					
+					
+					listaValores.add(valor);
+				
+					
+				}	
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+			
+			return listaValores;
+			
+			
 		}
 	
 	

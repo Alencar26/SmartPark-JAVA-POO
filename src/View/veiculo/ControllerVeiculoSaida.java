@@ -6,8 +6,11 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+
+import DAO.ValorDAO;
 import DAO.VeiculoDAO;
 import Model.RegistroEstacionamento;
+import Model.Valor;
 import View.inicial.ControllerInicial;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -114,11 +117,13 @@ public class ControllerVeiculoSaida extends Application {
     
     private void CalculoValoraAPagar(double diferencaHoras) {
     	
-    	double preco = 3.50;
     	
-    	double valorFinal = diferencaHoras * preco;
+    	Valor valor = new ValorDAO().findByHours(diferencaHoras);
+    	
+    	double preco = valor.getValor();
+    	
     	DecimalFormat formatador = new DecimalFormat("0.00");
-    	String Valor = formatador.format(valorFinal);
+    	String Valor = formatador.format(preco);
     	lblValor.setText(Valor);
     }
     
@@ -128,7 +133,7 @@ public class ControllerVeiculoSaida extends Application {
     	VeiculoDAO veiculoDAO = new VeiculoDAO();
     	veiculoDAO.excluir(placa);
     	ControllerInicial telaInicial = new ControllerInicial();
-    	telaInicial.listarVeiculosNoPatio();
+    	//telaInicial.listarVeiculosNoPatio();
     	
     }
     
