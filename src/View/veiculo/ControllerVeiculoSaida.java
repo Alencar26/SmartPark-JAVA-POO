@@ -1,5 +1,9 @@
 package View.veiculo;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,6 +17,7 @@ import Model.RegistroEstacionamento;
 import Model.Valor;
 import View.inicial.ControllerInicial;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -59,6 +64,8 @@ public class ControllerVeiculoSaida extends Application {
     @FXML
     private Label lblEstadia;
     
+    private String caminhoCupom = "SAIDA.txt";
+    private String valorAPagar = "";
     
     public void execute() {
     	launch();
@@ -89,6 +96,9 @@ public class ControllerVeiculoSaida extends Application {
     			System.out.println(saida + " AQUI");
     			lblSaida.setText(saida);
     			CalculaTempoDePermanencia(entrada, saidaD);
+    			//CUPOM
+    			String data = veiculo.getEntrada().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).toString();
+    			Cupom(caminhoCupom, CorpoCupom(veiculo.getPlaca(), veiculo.getMarca(), veiculo.getModelo(), veiculo.getCor(), data, entrada, saidaD, valorAPagar));
     		}
     	}
     }
@@ -113,28 +123,81 @@ public class ControllerVeiculoSaida extends Application {
         String difHoras = formatador.format(diferencaHoras);
         lblEstadia.setText(difHoras);
         CalculoValoraAPagar(diferencaHoras);
+
     }
     
     private void CalculoValoraAPagar(double diferencaHoras) {
     	
     	
     	Valor valor = new ValorDAO().findByHours(diferencaHoras);
-    	
+    	System.out.println(valor.getValor());
     	double preco = valor.getValor();
     	
     	DecimalFormat formatador = new DecimalFormat("0.00");
     	String Valor = formatador.format(preco);
+    	valorAPagar = Valor;
     	lblValor.setText(Valor);
+    }
+            
+	private void Cupom(String caminhaArquivo, String textoArquivo) {
+	    	
+	    	try(
+	    			FileWriter criadorArquivo = new FileWriter(caminhaArquivo, false);
+	    			BufferedWriter buffer = new BufferedWriter(criadorArquivo);
+	    			PrintWriter escritorArquivo = new PrintWriter(buffer);
+	    			
+	    			){
+	    		
+	    		escritorArquivo.append(textoArquivo);
+	    		
+	    	}catch(IOException e) {
+	    		e.printStackTrace();
+	    	}
+	    	
+	    }
+    
+    private String CorpoCupom(String placa,String marca, String modelo, String cor, String data, String horaEntrada, String horaSaida, String valor) {
+    	
+    	return "=Smart Park====================================\r\n" + 
+    			"	SMART-PARCK ESTACIONAMENTOS LTDA\r\n" + 
+    			"	    CNPJ:00.000.000/0001-00\r\n" + 
+    			"===============================================\r\n" + 
+    			"\r\n" + 
+    			"DATA      : "+data+"      PLACA  : "+placa+"\r\n" + 
+    			"ENTRADA   : "+horaEntrada+"	    MARCA  : "+marca+"\r\n" + 
+    			"SAÍDA     : "+horaSaida+"	    MODELO : "+modelo+"\r\n" + 
+    			"			    COR    : "+cor+"\r\n" + 
+    			"\r\n" + 
+    			"\r\n" + 
+    			"\r\n" + 
+    			"	    VALOR PAGO: R$"+valor+"\r\n" + 
+    			"\r\n" + 
+    			"\r\n" + 
+    			"\r\n" + 
+    			"ENDEREÇO - MARECHAL FLORIANO PEIXOTO \r\n" + 
+    			"NÚMERO - 15\r\n" + 
+    			"\r\n" + 
+    			"\r\n" + 
+    			"HORÁRIO DE FUNCIONAMENTO\r\n" + 
+    			"07:30 ATÉ 20:00\r\n" + 
+    			"OBRIGADO PELA PREFERÊNCIA\r\n" + 
+    			"\r\n" + 
+    			"===============================================\r\n" + 
+    			"		Volte Sempre!";
     }
     
     @FXML
-    void SairVeiculo(ActionEvent event) {
+    void SairVeiculo(ActionEvent event) throws IOException {
     	String placa = txtBuscaVeiculo.getText();
     	VeiculoDAO veiculoDAO = new VeiculoDAO();
     	veiculoDAO.excluir(placa);
     	ControllerInicial telaInicial = new ControllerInicial();
     	//telaInicial.listarVeiculosNoPatio();
     	
+    	java.awt.Desktop.getDesktop().open( new File( "SAIDA.txt" ) );
+    	
+    	Stage stage = (Stage) btnConfirmaSaida.getScene().getWindow();
+    	stage.close();
     }
     
     @Override
@@ -151,6 +214,8 @@ public class ControllerVeiculoSaida extends Application {
     	}
     	
     }
+    
+   
     
     
     

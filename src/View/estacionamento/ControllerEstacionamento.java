@@ -29,6 +29,9 @@ public class ControllerEstacionamento extends Application {
     void AtualizaInformacoes(ActionEvent event) {
     	Controlador();
     	limpaDados();
+    	
+    	Stage stage = (Stage) btnAtualiza.getScene().getWindow();
+    	stage.close();
     }
 
     @FXML

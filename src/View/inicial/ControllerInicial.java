@@ -106,7 +106,7 @@ public class ControllerInicial extends Application implements Initializable {
 	  private void ConfirmaSelecao(RegistroEstacionamento v) {
 	  	System.out.println("Veiculo Selecionado: "+ v);
 	  	
-	  	new ControllerVeiculoSaida().execute();
+	  
 	  }
 	  
 	  private void VeicuoSelecionado() {
@@ -133,6 +133,12 @@ public class ControllerInicial extends Application implements Initializable {
     
     @FXML
     void TelaVeiculoSaida(ActionEvent event) throws IOException {
+    	/*
+    	Stage stage = (Stage) btnSaida.getScene().getWindow();
+    	ControllerVeiculoSaida Saida = new ControllerVeiculoSaida();
+    	Saida.start(stage);
+    	*/
+    	
     	Pane testPane = FXMLLoader
 				.load(getClass().getResource("/View/veiculo/VeiculoSaida.fxml"));
 
@@ -142,7 +148,9 @@ public class ControllerInicial extends Application implements Initializable {
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("VeiculosSaida");
 		primaryStage.show();
-
+		
+    	
+    	
 		
     }
     
@@ -231,6 +239,10 @@ public class ControllerInicial extends Application implements Initializable {
     public void execute() {
     	launch();
     }
+    
+    public static void main(String[] args) {
+		launch();
+	}
 
     
     @Override

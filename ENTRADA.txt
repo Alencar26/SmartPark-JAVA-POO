@@ -1,0 +1,22 @@
+=Smart Park====================================
+	SMART-PARCK ESTACIONAMENTOS LTDA
+	    CNPJ:00.000.000/0001-00
+===============================================
+
+DATA   : 22/11/2020
+HORA   : 10:56:07
+
+PLACA  : 2
+MARCA  : 2
+MODELO : 2
+COR    : 2
+
+ENDEREÇO - MARECHAL FLORIANO PEIXOTO 
+NÚMERO - 15
+
+
+HORÁRIO DE FUNCIONAMENTO
+07:30 ATÉ 20:00
+OBRIGADO PELA PREFERÊNCIA
+
+===============================================
